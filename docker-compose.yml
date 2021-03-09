@@ -1,0 +1,23 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    container_name: mysqldb
+    environment: #Read variables from .env file
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PW}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USER}"
+      MYSQL_PASSWORD: "${DB_PW}"
+    volumes: 
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # entrypoint sql file
+    ports:
+      - "3306:3306"
+  web:
+    build: .
+    container_name: php_web
+    depends_on:
+      - db
+    volumes:
+      - ./php/:/var/www/html/
+    ports:
+      - "8080:80"
